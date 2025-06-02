@@ -2,18 +2,16 @@ import turtle
 import math
 from collections import defaultdict
 
-# --- Configuration ---
 focal_length = 200
 observer_distance = 400
 alpha_deg = 30
 beta_deg = 30
 depth = 2
-quantize_precision = 0.001  # snap coordinates to remove inner seams
+quantize_precision = 0.001
 
 alpha = math.radians(alpha_deg)
 beta = math.radians(beta_deg)
 
-# --- Rotation and Projection ---
 def rotate_x(p, angle):
     x, y, z = p
     cos_a, sin_a = math.cos(angle), math.sin(angle)
@@ -59,7 +57,6 @@ def collect_cube_edges(center, size):
         edge = normalize_edge(world_vertices[i], world_vertices[j])
         edge_counts[edge] += 1
 
-# --- Draw Only Unique (Outer) Edges ---
 def draw_collected_edges():
     t.pencolor("black")
     t.pensize(1)
@@ -75,7 +72,6 @@ def draw_collected_edges():
             t.pendown()
             t.goto(p2_proj)
 
-# --- Draw Cube Faces Only (No Outline) ---
 def draw_cube_fill(center, size):
     x0, y0, z0 = center
     s = size / 2
@@ -92,7 +88,7 @@ def draw_cube_fill(center, size):
         [1, 2, 6, 5], [0, 3, 7, 4]
     ]
     t.fillcolor("lightblue")
-    t.pencolor("lightblue")  # hide fill outlines
+    t.pencolor("lightblue")
     for face in faces:
         t.penup()
         t.goto(projected[face[0]])
@@ -102,7 +98,6 @@ def draw_cube_fill(center, size):
         t.goto(projected[face[0]])
         t.end_fill()
 
-# --- Recursive Sierpiński Cube ---
 def sierpinski_cube(center, size, depth):
     if depth == 0:
         draw_cube_fill(center, size)
@@ -118,7 +113,6 @@ def sierpinski_cube(center, size, depth):
                 new_center = (x0 + dx * step, y0 + dy * step, z0 + dz * step)
                 sierpinski_cube(new_center, step, depth - 1)
 
-# --- Turtle Setup ---
 screen = turtle.Screen()
 screen.setup(width=800, height=800)
 screen.setworldcoordinates(-400, -400, 400, 400)
@@ -133,7 +127,6 @@ t.hideturtle()
 t.speed(0)
 turtle.delay(0)
 
-# --- Run the Drawing ---
 sierpinski_cube(center=(0, 0, 0), size=200, depth=depth)
 draw_collected_edges()
 screen.update()
